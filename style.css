@@ -32,8 +32,14 @@
 }
 
 .selected-btn {
-    background-color: black;
-    color: white;
+    background-color: rgb(27, 112, 146) !important;
+    color: white !important;
+    transition: .2s ease-in-out;
+}
+
+.unvisible {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 .btns .btn,
@@ -57,22 +63,12 @@
     font-weight: bolder;
     box-shadow: inset 0 0 2px blue;
     cursor: pointer;
+    outline: 0;
 }
 
-
-/* .btns .world {
-    background-color: skyblue;
-    font-weight: bolder;
-    box-shadow: inset 0 0 2px blue;
-    cursor: pointer;
+.btns-control button:hover {
+    background-color: rgb(54, 157, 197);
 }
-
-.btns .world:hover {
-    background-color: rgb(78, 184, 226);
-    font-weight: bolder;
-    box-shadow: inset 0 0 2px blue;
-    cursor: pointer;
-} */
 
 .countries {
     display: flex;
@@ -94,6 +90,36 @@
 
 .countries div a {
     text-decoration: none;
+    animation: btn .3s ease-in-out;
+}
+
+.countries-data {
+    position: relative;
+    height: auto;
+    display: flex;
+    justify-content: space-evenly;
+    place-items: center;
+    flex-flow: row wrap;
+    border-bottom: 1px dashed #333;
+    transition: .2s ease-in-out;
+}
+
+.countries-data div:nth-child(1) {
+    flex: 0 100%;
+    font-weight: bold;
+    background-color: #333;
+    color: white;
+    max-width: max-content;
+    text-transform: uppercase;
+}
+
+.countries-data .country-data {
+    border-radius: 7px;
+    padding: 1rem;
+    margin: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    text-transform: capitalize;
     animation: btn .3s ease-in-out;
 }
 

@@ -6,12 +6,16 @@ const countriesAPI = `https://api.codetabs.com/v1/proxy?quest=https://restcountr
 const covidAPI = `https://corona-api.com/countries`
     // global vars
 const listOfCountriesByRegion = {}
+const btnsControl = $('.btns-control')
 const btnWrap = $('.btns')
 const countriesWrap = $('.countries')
 const statusBtnWrap = $('.status-btn')
-const ctx = document.getElementById('myChart')
+const confirmedBtn = $('.confirmed')
+const countries = $('.countries')
+const chartWrap = $('.chart-wrap')
+const countriesDataWrap = $('.countries-data')
+const ctx = document.getElementById('myChart').getContext('2d')
 let myChart = '';
-console.log(myChart === '');
 // fetch
 const fetchAllcountries = () => {
         fetch(countriesAPI)
@@ -58,40 +62,57 @@ const createCountriesNames = e => {
             countriesWrap.appendChild(countriesLinkWrap)
         })
     } else {
-        listOfCountriesByRegion[e.target.innerHTML].forEach(e => {
-            if (e.name !== undefined) {
-                let countriesLink = $1('a')
-                let countriesLinkWrap = $1('div')
-                countriesLink.href = '#'
-                countriesLink.innerHTML = ` ${e.name} `
-                countriesLinkWrap.appendChild(countriesLink)
-                countriesWrap.appendChild(countriesLinkWrap)
-            }
-        })
-    }
-}
-
-
-const handleClickByRegion = e => {
-    const statusBtns = () => {
-        let statusName = ['confirmed', 'recovered', 'critical', 'deaths']
-        for (let i = 0; i < statusName.length; i++) {
-            let btn = $1('button')
-            btn.textContent = statusName[i]
-            statusBtnWrap.insertAdjacentElement('afterbegin', btn)
+        if (listOfCountriesByRegion[e.target.innerHTML] !== undefined) {
+            listOfCountriesByRegion[e.target.innerHTML].forEach(e => {
+                if (e.name !== undefined) {
+                    let countriesLink = $1('a')
+                    let countriesLinkWrap = $1('div')
+                    countriesLink.href = '#'
+                    countriesLink.innerHTML = ` ${e.name} `
+                    countriesLinkWrap.appendChild(countriesLink)
+                    countriesWrap.appendChild(countriesLinkWrap)
+                }
+            })
         }
     }
-    if (countriesWrap.textContent === '') {
-        statusBtnWrap.textContent = ''
-        createCountriesNames(e)
-        statusBtns()
-        createChart(e)
+}
+countriesDataWrap.classList.add('unvisible')
+const handleClickByRegion = e => {
+    countriesDataWrap.classList.add('unvisible')
+    chartWrap.classList.remove('unvisible')
+    if (!e.target.classList.contains('btns')) {
+        btnWrap.childNodes.forEach(btn => {
+            if (!btn.classList.contains('selected-btn')) {
+                e.target.classList.add('selected-btn')
+            } else {
+                btn.classList.remove('selected-btn')
+                e.target.classList.add('selected-btn')
+            }
+        })
+        statusBtnWrap.childNodes.forEach(statusBtn => {
+            statusBtn.classList.remove('selected-btn')
+        })
+        const statusBtns = () => {
+            let statusName = ['confirmed', 'recovered', 'critical', 'deaths']
+            for (let i = 0; i < statusName.length; i++) {
+                let btn = $1('button')
+                btn.classList.add(statusName[i])
+                btn.textContent = statusName[i]
+                statusBtnWrap.insertAdjacentElement('afterbegin', btn)
+            }
 
-    } else {
-        countriesWrap.innerHTML = ''
-        createCountriesNames(e)
-        myChart.destroy();
-        createChart(e)
+        }
+        if (countriesWrap.textContent === '') {
+            statusBtnWrap.textContent = ''
+            createCountriesNames(e)
+            statusBtns()
+            createChart(e)
+        } else {
+            countriesWrap.innerHTML = ''
+            createCountriesNames(e)
+            myChart.destroy()
+            createChart(e)
+        }
     }
 }
 
@@ -120,39 +141,16 @@ const fetchCovidApi = () => {
 }
 fetchCovidApi()
 
-const handleChartLabels = e => {
-    const labels = []
-    if (e.target.innerHTML === 'world') {
-        listOfCountriesByRegion[e.target.innerHTML].forEach(countries => {
-            covidStatusPerCountry.forEach(e => {
-                if (e.name === countries) {
-                    labels.push(countries)
-                }
-            });
-
-        })
-    } else {
-        listOfCountriesByRegion[e.target.innerHTML].forEach(countries => {
-            covidStatusPerCountry.forEach(e => {
-                if (e.name === countries.name) {
-                    labels.push(countries.name)
-                }
-            });
-        })
-    }
-    return labels
-}
-
 const createChart = e => {
-    myChart = new Chart(ctx.getContext('2d'), {
+    myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: handleChartLabels(e),
+            labels: [],
             datasets: [{
                 label: `covid data for ${e.target.textContent}`,
-                data: handleData(e),
-                backgroundColor: [...handleBackgroundColor(handleChartLabels(e).length)],
-                borderColor: [...handleBackgroundColor(handleChartLabels(e).length)],
+                data: [],
+                backgroundColor: handleBGColor,
+                borderColor: handleBGColor,
                 borderWidth: 1
             }]
         },
@@ -168,22 +166,85 @@ const createChart = e => {
     });
 }
 
-const randomColor = () => Math.floor(Math.random() * 255)
-const handleBackgroundColor = x => {
-    let arrOfColors = []
-    for (let i = 0; i < x; i++) {
+const handleBGColor = () => {
+    const randomColor = () => Math.floor(Math.random() * 255)
+    const arrOfColors = []
+    for (let i = 0; i < dynamicData.length; i++) {
         arrOfColors.push(`rgba(${randomColor()},${randomColor()},${randomColor()},0.5)`)
     }
     return arrOfColors
 }
-const handleData = x => {
-    let handleNumbersData = []
-    handleChartLabels(x).forEach(name => {
-        covidStatusPerCountry.forEach(el => {
-            if (name === el.name) {
-                handleNumbersData.push(el.confirmed)
+
+let dynamicData = []
+let dynamicLabel = []
+const handleData = e => {
+    chartWrap.classList.remove('unvisible')
+    countriesDataWrap.classList.add('unvisible')
+    let chartData = myChart.data.datasets[0].data
+    let chartLabel = myChart.data.labels
+    dynamicData = []
+    dynamicLabel = []
+    chartData.splice(0, chartData.length)
+    chartLabel.splice(0, chartLabel.length)
+    myChart.update();
+    if (!e.target.classList.contains('status-btn')) {
+        statusBtnWrap.childNodes.forEach(statusBtn => {
+            if (!statusBtn.classList.contains('selected-btn')) {
+                e.target.classList.add('selected-btn')
+            } else {
+                statusBtn.classList.remove('selected-btn')
+                e.target.classList.add('selected-btn')
             }
         })
+    }
+    btnWrap.childNodes.forEach(btn => {
+        if (btn.classList.contains('selected-btn')) {
+            console.log(e.target.textContent, btn.textContent);
+            if (btn.textContent === 'world') {
+                listOfCountriesByRegion[btn.textContent].forEach(country => {
+                    covidStatusPerCountry.forEach(covidData => {
+                        if (country === covidData.name) {
+                            dynamicLabel.push(country)
+                            dynamicData.push(covidData[e.target.textContent])
+                        }
+                    })
+                })
+            } else {
+                listOfCountriesByRegion[btn.textContent].forEach(country => {
+                    covidStatusPerCountry.forEach(covidData => {
+                        if (country.name === covidData.name) {
+                            dynamicLabel.push(country.name)
+                            dynamicData.push(covidData[e.target.textContent])
+                        }
+                    })
+                })
+            }
+        }
     })
-    return handleNumbersData
+
+    chartLabel.push(...dynamicLabel)
+    chartData.push(...dynamicData)
+    myChart.update();
 }
+
+statusBtnWrap.addEventListener('click', e => handleData(e))
+
+
+const handleCountriesData = e => {
+    let country = e.target.textContent.trim()
+    covidStatusPerCountry.forEach(countryData => {
+        if (country === countryData.name) {
+            chartWrap.classList.add('unvisible')
+            countriesDataWrap.classList.remove('unvisible')
+            countriesDataWrap.textContent = ''
+            Object.entries(countryData).forEach(dataEl => {
+                let dataDiv = $1('div')
+                dataDiv.classList.add('country-data')
+                dataDiv.textContent = dataEl.join(': ')
+                countriesDataWrap.appendChild(dataDiv)
+            })
+        }
+    })
+}
+
+countries.addEventListener('click', e => handleCountriesData(e))
