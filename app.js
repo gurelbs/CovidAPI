@@ -17,9 +17,12 @@ const chartWrap = $('.chart-wrap')
 const chartLook = $('.select-chart-look')
 const countriesDataWrap = $('.countries-data')
 const ctx = document.getElementById('myChart').getContext('2d')
+const spinner = document.getElementById("spinner");
+
 let myChart = '';
 // fetch
 const fetchAllcountries = () => {
+    spinner.removeAttribute('hidden');
     fetch(countriesAPI)
         .then(res => res.json())
         .then(data => {
@@ -37,6 +40,7 @@ const fetchAllcountries = () => {
             });
             delete listOfCountriesByRegion['']
             createRegionBtns()
+            spinner.setAttribute('hidden', '');
         })
 }
 fetchAllcountries()
@@ -99,6 +103,7 @@ chartWrap.classList.add('unvisible')
 countries.classList.add('unvisible')
 countriesDataWrap.classList.add('unvisible')
 const handleClickByRegion = e => {
+
         chartWrap.classList.remove('unvisible')
         countries.classList.remove('unvisible')
         countriesDataWrap.classList.add('unvisible')
