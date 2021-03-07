@@ -7,6 +7,7 @@ const covidAPI = `https://corona-api.com/countries`
     // global vars
 const listOfCountriesByRegion = {}
 const btnsControl = $('.btns-control')
+const cover = $('.hero')
 const btnWrap = $('.btns')
 const countriesWrap = $('.countries')
 const statusBtnWrap = $('.status-btn')
@@ -94,9 +95,14 @@ const createCountriesNames = e => {
         }
     }
 }
+chartWrap.classList.add('unvisible')
+countries.classList.add('unvisible')
 countriesDataWrap.classList.add('unvisible')
 const handleClickByRegion = e => {
+        chartWrap.classList.remove('unvisible')
+        countries.classList.remove('unvisible')
         countriesDataWrap.classList.add('unvisible')
+        cover.classList.add('unvisible')
         chartWrap.classList.remove('unvisible')
         if (!e.target.classList.contains('btns')) {
             btnWrap.childNodes.forEach(btn => {
