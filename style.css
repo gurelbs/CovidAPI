@@ -16,9 +16,10 @@
 }
 
 .fa-chevron-right {
-    position: absolute;
+    position: fixed;
     right: 0;
-    padding: 2vw;
+    top: 0;
+    padding: 2vw 2vw 0 0;
     font-size: calc(2vw + 1rem);
     cursor: pointer;
 }
@@ -195,6 +196,8 @@
     position: relative;
     height: auto;
     display: flex;
+    max-width: 80%;
+    margin: 0 auto;
     justify-content: space-evenly;
     place-items: center;
     flex-flow: row wrap;
