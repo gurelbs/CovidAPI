@@ -125,7 +125,7 @@
     font-weight: bold;
     transition: .3s ease-in-out;
     flex-grow: 1;
-    font-size: 1vw;
+    font-size: calc(.5vw + .5rem);
 }
 
 .btns .btn:hover,
@@ -228,9 +228,8 @@
     }
 }
 
-
-/* @media only screen and (max-width: 800px) {
+@media only screen and (max-width: 800px) {
     .select-chart-look {
         display: none;
     }
-} */
+}
