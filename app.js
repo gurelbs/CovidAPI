@@ -287,7 +287,15 @@ const changeChartLook = e => {
     }
     return myChart.config.type
 }
+
+
+// desktop event
 btnWrap.addEventListener('click', handleClickByRegion)
-statusBtnWrap.addEventListener('click', handleData)
 countries.addEventListener('click', handleCountriesData)
+statusBtnWrap.addEventListener('click', handleData)
 chartWrap.addEventListener('click', changeChartLook)
+    // mobile event
+btnWrap.addEventListener('touchstart', handleClickByRegion)
+countries.addEventListener('touchstart', handleCountriesData)
+statusBtnWrap.addEventListener('touchstart', handleData)
+chartWrap.addEventListener('touchstart', changeChartLook)
