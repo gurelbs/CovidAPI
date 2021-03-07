@@ -12,6 +12,7 @@
     min-height: 100vh;
     max-height: 100%;
     background: #eee;
+    position: relative;
 }
 
 .hero {
@@ -36,7 +37,7 @@
 }
 
 .hero .main-feature {
-    padding: 7vw 0 3.5vw 0;
+    padding: 5vw 0;
 }
 
 .hero .main-feature h2 {
@@ -210,6 +211,17 @@
     font-size: calc(1.2vw + .5rem);
     text-transform: capitalize;
     animation: btn .3s ease-in-out;
+}
+
+.container footer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    bottom: 0;
+}
+
+footer .love {
+    color: red;
 }
 
 @keyframes btn {
