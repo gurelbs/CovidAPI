@@ -166,7 +166,6 @@ const fetchCovidApi = () => {
                     newDeaths: countries.today.deaths,
                 })
             })
-            console.log(covidStatusPerCountry);
         })
 }
 fetchCovidApi()
@@ -255,7 +254,6 @@ const handleData = e => {
 }
 const handleCountriesData = e => {
     let country = e.target.value
-    console.log(country);
     covidStatusPerCountry.forEach(countryData => {
         if (country === countryData.name) {
             chartWrap.classList.add('unvisible')
@@ -288,7 +286,6 @@ const createChartLook = () => {
 
 const changeChartLook = e => {
     if (e.target.value) {
-        console.log(e.target.value, myChart.config.type);
         myChart.config.type = e.target.value
     }
     return myChart.config.type
