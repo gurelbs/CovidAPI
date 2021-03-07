@@ -7,6 +7,7 @@ const covidAPI = `https://corona-api.com/countries`
     // global vars
 const listOfCountriesByRegion = {}
 const btnsControl = $('.btns-control')
+const backBtn = $('.fa-chevron-right')
 const cover = $('.hero')
 const btnWrap = $('.btns')
 const countriesWrap = $('.countries')
@@ -18,7 +19,6 @@ const chartLook = $('.select-chart-look')
 const countriesDataWrap = $('.countries-data')
 const ctx = document.getElementById('myChart').getContext('2d')
 const spinner = document.getElementById("spinner");
-
 let myChart = '';
 // fetch
 const fetchAllcountries = () => {
@@ -102,8 +102,9 @@ const createCountriesNames = e => {
 chartWrap.classList.add('unvisible')
 countries.classList.add('unvisible')
 countriesDataWrap.classList.add('unvisible')
-const handleClickByRegion = e => {
 
+const handleClickByRegion = e => {
+        backBtn.classList.remove('unvisible')
         chartWrap.classList.remove('unvisible')
         countries.classList.remove('unvisible')
         countriesDataWrap.classList.add('unvisible')
@@ -293,9 +294,9 @@ const changeChartLook = e => {
     return myChart.config.type
 }
 
-
 // desktop event
 btnWrap.addEventListener('click', handleClickByRegion)
 countries.addEventListener('click', handleCountriesData)
 statusBtnWrap.addEventListener('click', handleData)
 chartWrap.addEventListener('click', changeChartLook)
+backBtn.addEventListener('click', () => location.reload())
