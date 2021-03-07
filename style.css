@@ -8,15 +8,21 @@
 
 .container {
     width: 100%;
-    min-height: 101vh;
     height: auto;
     max-height: 100%;
 }
 
 .chart-wrap {
     position: relative;
-    width: 70vw;
+    width: 70%;
     display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+}
+
+.select-chart-look {
+    border: 0;
     margin: 0 auto;
 }
 
@@ -72,25 +78,36 @@
 
 .countries {
     display: flex;
-    flex-wrap: wrap;
-    position: relative;
-    justify-content: space-evenly;
-    bottom: 0;
-    max-width: 80%;
+    justify-content: center;
+    max-width: max-content;
+    border-bottom: 1px dashed rgb(218, 165, 165);
     margin: 0 auto;
 }
 
-.countries div {
+.countries select,
+.countries label {
+    height: 3rem;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    text-align: center;
+    border: 0;
+    outline: 0;
+}
+
+.countries option,
+.countries select {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.countries .countries div {
     margin: .5rem;
     padding: .25rem 1rem;
     border: 1px solid #333;
     border-radius: 7px;
     animation: btn .1s ease-in-out;
-}
-
-.countries div a {
-    text-decoration: none;
-    animation: btn .3s ease-in-out;
 }
 
 .countries-data {

@@ -13,33 +13,31 @@ const statusBtnWrap = $('.status-btn')
 const confirmedBtn = $('.confirmed')
 const countries = $('.countries')
 const chartWrap = $('.chart-wrap')
+const chartLook = $('.select-chart-look')
 const countriesDataWrap = $('.countries-data')
 const ctx = document.getElementById('myChart').getContext('2d')
 let myChart = '';
 // fetch
 const fetchAllcountries = () => {
-        fetch(countriesAPI)
-            .then(res => res.json())
-            .then(data => {
-                listOfCountriesByRegion['world'] = []
-                data.forEach(countries => {
-                    listOfCountriesByRegion['world'].push(countries.name.common)
-                    if (!listOfCountriesByRegion[countries.region]) {
-                        listOfCountriesByRegion[countries.region] = [countries.region]
-                    } else {
-                        listOfCountriesByRegion[countries.region].push({
-                            name: countries.name.common,
-                            code: countries.cca2
-                        })
-                    }
-                });
-                delete listOfCountriesByRegion['']
-                createRegionBtns()
-
-            })
-    }
-    // logCountries
-    // const logCountriesByRegion = () => console.log(listOfCountriesByRegion)
+    fetch(countriesAPI)
+        .then(res => res.json())
+        .then(data => {
+            listOfCountriesByRegion['world'] = []
+            data.forEach(countries => {
+                listOfCountriesByRegion['world'].push(countries.name.common)
+                if (!listOfCountriesByRegion[countries.region]) {
+                    listOfCountriesByRegion[countries.region] = [countries.region]
+                } else {
+                    listOfCountriesByRegion[countries.region].push({
+                        name: countries.name.common,
+                        code: countries.cca2
+                    })
+                }
+            });
+            delete listOfCountriesByRegion['']
+            createRegionBtns()
+        })
+}
 fetchAllcountries()
     // create button
 const createRegionBtns = () => {
@@ -53,24 +51,44 @@ const createRegionBtns = () => {
 }
 const createCountriesNames = e => {
     if (e.target.innerHTML === 'world') {
+        let countriesSelect = $1('select')
+        let labelForSelect = $1('label')
+        let defaultOption = $1('option')
+        countriesSelect.name = 'world'
+        labelForSelect.textContent = `Choose a country:`
+        labelForSelect.setAttribute('for', 'world')
+        countriesSelect.setAttribute('id', 'world')
+        defaultOption.setAttribute('disabled', true)
+        defaultOption.setAttribute('selected', true)
+        defaultOption.textContent = `select an country from all of the world`
+        countriesSelect.appendChild(defaultOption)
         listOfCountriesByRegion[e.target.innerHTML].forEach(e => {
-            let countriesLink = $1('a')
-            let countriesLinkWrap = $1('div')
-            countriesLink.href = '#'
-            countriesLink.innerHTML = ` ${e} `
-            countriesLinkWrap.appendChild(countriesLink)
-            countriesWrap.appendChild(countriesLinkWrap)
+            let countryOption = $1('option')
+            countryOption.innerHTML = e
+            countriesSelect.appendChild(countryOption)
+            countriesWrap.appendChild(labelForSelect)
+            countriesWrap.appendChild(countriesSelect)
         })
     } else {
         if (listOfCountriesByRegion[e.target.innerHTML] !== undefined) {
+            let countriesSelect = $1('select')
+            let labelForSelect = $1('label')
+            let defaultOption = $1('option')
+            countriesSelect.name = e.target.innerHTML
+            labelForSelect.textContent = `Choose a country:`
+            labelForSelect.setAttribute('for', e.target.innerHTML)
+            countriesSelect.setAttribute('id', e.target.innerHTML)
+            defaultOption.setAttribute('disabled', true)
+            defaultOption.setAttribute('selected', true)
+            defaultOption.textContent = `select an country from ${e.target.innerHTML}`
+            countriesSelect.appendChild(defaultOption)
             listOfCountriesByRegion[e.target.innerHTML].forEach(e => {
                 if (e.name !== undefined) {
-                    let countriesLink = $1('a')
-                    let countriesLinkWrap = $1('div')
-                    countriesLink.href = '#'
-                    countriesLink.innerHTML = ` ${e.name} `
-                    countriesLinkWrap.appendChild(countriesLink)
-                    countriesWrap.appendChild(countriesLinkWrap)
+                    let countryOption = $1('option')
+                    countryOption.innerHTML = e.name
+                    countriesSelect.appendChild(countryOption)
+                    countriesWrap.appendChild(labelForSelect)
+                    countriesWrap.appendChild(countriesSelect)
                 }
             })
         }
@@ -78,47 +96,47 @@ const createCountriesNames = e => {
 }
 countriesDataWrap.classList.add('unvisible')
 const handleClickByRegion = e => {
-    countriesDataWrap.classList.add('unvisible')
-    chartWrap.classList.remove('unvisible')
-    if (!e.target.classList.contains('btns')) {
-        btnWrap.childNodes.forEach(btn => {
-            if (!btn.classList.contains('selected-btn')) {
-                e.target.classList.add('selected-btn')
+        countriesDataWrap.classList.add('unvisible')
+        chartWrap.classList.remove('unvisible')
+        if (!e.target.classList.contains('btns')) {
+            btnWrap.childNodes.forEach(btn => {
+                if (!btn.classList.contains('selected-btn')) {
+                    e.target.classList.add('selected-btn')
+                } else {
+                    btn.classList.remove('selected-btn')
+                    e.target.classList.add('selected-btn')
+                }
+            })
+            statusBtnWrap.childNodes.forEach(statusBtn => {
+                statusBtn.classList.remove('selected-btn')
+            })
+            const statusBtns = () => {
+                let statusName = ['confirmed', 'recovered', 'critical', 'deaths']
+                for (let i = 0; i < statusName.length; i++) {
+                    let btn = $1('button')
+                    btn.classList.add(statusName[i])
+                    btn.textContent = statusName[i]
+                    statusBtnWrap.insertAdjacentElement('afterbegin', btn)
+                }
+            }
+            if (countriesWrap.textContent === '') {
+                statusBtnWrap.textContent = ''
+                createCountriesNames(e)
+                statusBtns()
+                createChart(e)
+                changeChartLook(e)
+                createChartLook()
             } else {
-                btn.classList.remove('selected-btn')
-                e.target.classList.add('selected-btn')
+                countriesWrap.innerHTML = ''
+                createCountriesNames(e)
+                myChart.destroy()
+                createChart(e)
+                chartLook.selectedIndex = 0;
             }
-        })
-        statusBtnWrap.childNodes.forEach(statusBtn => {
-            statusBtn.classList.remove('selected-btn')
-        })
-        const statusBtns = () => {
-            let statusName = ['confirmed', 'recovered', 'critical', 'deaths']
-            for (let i = 0; i < statusName.length; i++) {
-                let btn = $1('button')
-                btn.classList.add(statusName[i])
-                btn.textContent = statusName[i]
-                statusBtnWrap.insertAdjacentElement('afterbegin', btn)
-            }
+        }
 
-        }
-        if (countriesWrap.textContent === '') {
-            statusBtnWrap.textContent = ''
-            createCountriesNames(e)
-            statusBtns()
-            createChart(e)
-        } else {
-            countriesWrap.innerHTML = ''
-            createCountriesNames(e)
-            myChart.destroy()
-            createChart(e)
-        }
     }
-}
-
-btnWrap.addEventListener('click', handleClickByRegion)
-
-// fetch CovidAPI
+    // fetch CovidAPI
 let covidStatusPerCountry = []
 const fetchCovidApi = () => {
     fetch(covidAPI)
@@ -140,10 +158,9 @@ const fetchCovidApi = () => {
         })
 }
 fetchCovidApi()
-
 const createChart = e => {
     myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'bar' || changeChartLook,
         data: {
             labels: [],
             datasets: [{
@@ -165,7 +182,6 @@ const createChart = e => {
         }
     });
 }
-
 const handleBGColor = () => {
     const randomColor = () => Math.floor(Math.random() * 255)
     const arrOfColors = []
@@ -174,7 +190,6 @@ const handleBGColor = () => {
     }
     return arrOfColors
 }
-
 let dynamicData = []
 let dynamicLabel = []
 const handleData = e => {
@@ -226,12 +241,9 @@ const handleData = e => {
     chartData.push(...dynamicData)
     myChart.update();
 }
-
-statusBtnWrap.addEventListener('click', e => handleData(e))
-
-
 const handleCountriesData = e => {
-    let country = e.target.textContent.trim()
+    let country = e.target.value
+    console.log(country);
     covidStatusPerCountry.forEach(countryData => {
         if (country === countryData.name) {
             chartWrap.classList.add('unvisible')
@@ -246,5 +258,30 @@ const handleCountriesData = e => {
         }
     })
 }
+chartLook.classList.add('unvisible')
+const createChartLook = () => {
+    chartLook.classList.remove('unvisible')
+    const chartOption = ['line', 'pie', 'bar', 'radar']
+    let defaultOption = $1('option')
+    defaultOption.setAttribute('disabled', true)
+    defaultOption.setAttribute('selected', true)
+    defaultOption.textContent = `choose your chart look`.toUpperCase()
+    chartLook.appendChild(defaultOption)
+    chartOption.forEach(el => {
+        let selectChartLookOption = $1('option')
+        selectChartLookOption.innerHTML = el
+        chartLook.appendChild(selectChartLookOption)
+    })
+}
 
-countries.addEventListener('click', e => handleCountriesData(e))
+const changeChartLook = e => {
+    if (e.target.value) {
+        console.log(e.target.value, myChart.config.type);
+        myChart.config.type = e.target.value
+    }
+    return myChart.config.type
+}
+btnWrap.addEventListener('click', handleClickByRegion)
+statusBtnWrap.addEventListener('click', handleData)
+countries.addEventListener('click', handleCountriesData)
+chartWrap.addEventListener('click', changeChartLook)
